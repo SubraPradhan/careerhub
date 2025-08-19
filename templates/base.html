@@ -11,18 +11,20 @@
     <a class="navbar-brand" href="/">CareerHub</a>
     <div>
       {% if user.is_authenticated %}
-        <span class="text-light me-3">Hi {{ user.username }}</span>
-        <form action="{% url 'logout' %}" method="post" style="display:inline;">
+    <span class="text-light me-3">Hi {{ user.username }}</span>
+    <form action="{% url 'logout' %}" method="post" style="display:inline;">
         {% csrf_token %}
         <button type="submit" class="btn btn-outline-light">Logout</button>
     </form>
-
-
-      {% else %}
+{% else %}
+    {# Hide buttons on home, login, and register pages #}
+    {% if request.resolver_match.url_name not in 'home login register' %}
         <a href="{% url 'login' %}" class="btn btn-outline-light me-2">Login</a>
         <a href="{% url 'register' %}" class="btn btn-primary">Register</a>
-        
-      {% endif %}
+    {% endif %}
+{% endif %}
+
+
     </div>
   </div>
 </nav>

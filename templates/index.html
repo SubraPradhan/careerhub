@@ -1,4 +1,10 @@
 {% extends 'base.html' %}
+
 {% block content %}
-<h1 class="text-center">Welcome to CareerHub</h1>
+<div class="container text-center mt-5">
+    <h1>Welcome to CareerHub</h1>
+    <p>Your gateway to opportunities.</p>
+    <a href="{% url 'login' %}" class="btn btn-primary m-2">Login</a>
+    <a href="{% url 'register' %}" class="btn btn-success m-2">Register</a>
+</div>
 {% endblock %}

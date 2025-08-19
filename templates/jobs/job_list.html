@@ -1,24 +1,21 @@
 {% extends 'base.html' %}
+
 {% block content %}
-<h2>Available Jobs</h2>
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Title</th>
-            <th>Location</th>
-            <th>Salary</th>
-            <th>Posted By</th>
-        </tr>
-    </thead>
-    <tbody>
-    {% for job in jobs %}
-        <tr>
-            <td>{{ job.title }}</td>
-            <td>{{ job.location }}</td>
-            <td>{{ job.salary }}</td>
-            <td>{{ job.employer.username }}</td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
+<div class="container">
+    <h2 class="mb-4">Available Jobs</h2>
+    <div class="list-group">
+        {% for job in jobs %}
+            <div class="list-group-item">
+                <h4>{{ job.title }}</h4>
+                <p>{{ job.description|truncatewords:25 }}</p> <!-- ✅ show description -->
+                <small><strong>Location:</strong> {{ job.location }}</small><br>
+                <small><strong>Salary:</strong> {{ job.salary }}</small><br>
+                <small><strong>Posted by:</strong> {{ job.employer.username }}</small><br>
+                <small><strong>Posted on:</strong> {{ job.created_at }}</small>
+            </div>
+        {% empty %}
+            <p>No jobs available right now.</p>
+        {% endfor %}
+    </div>
+</div>
 {% endblock %}
