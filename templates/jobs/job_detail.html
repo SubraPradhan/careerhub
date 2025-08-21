@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-body">
+            <!-- Job Title -->
+            <h2 class="card-title">{{ job.title }}</h2>
+            <h5 class="text-muted">{{ job.company_name }}</h5>
+
+            <!-- Job Info -->
+            <p><strong>Location:</strong> {{ job.location }}</p>
+            <p><strong>Salary:</strong> {{ job.salary }}</p>
+            <p><strong>Posted by:</strong> {{ job.employer.username }}</p>
+            <p><strong>Posted on:</strong> {{ job.created_at|date:"M d, Y" }}</p>
+
+            <hr>
+
+            <!-- Job Description -->
+            <h4>Job Description</h4>
+            <p>{{ job.description|linebreaks }}</p>
+
+            <!-- Back button -->
+            <a href="{% url 'job_list' %}" class="btn btn-secondary mt-3">⬅ Back to Jobs</a>
+            <a href="{% url 'apply_to_job' job.id %}" class="btn btn-secondary mt-3">Apply Now</a>
+
+
+            {% if user == job.employer %}
+                <a href="{% url 'view_applications' job.id %}" class="btn btn-info mt-3">View Applications</a>
+            {% endif %}
+
+            
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+
+

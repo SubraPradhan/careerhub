@@ -1,18 +1,19 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .forms import JobForm
-from .models import Job
+from .forms import JobForm, ApplicationForm
+from .models import Job, Application
+
 
 # Add Job (Employer only)
 @login_required
 def add_job(request):
-    if request.user.user_type != "employer":   # <-- stick to user_type
+    if request.user.user_type != "employer":   # only employers can add jobs
         return redirect('dashboard')
     if request.method == "POST":
         form = JobForm(request.POST)
         if form.is_valid():
             job = form.save(commit=False)
-            job.employer = request.user  # must match Job model field
+            job.employer = request.user  # link job to employer
             job.save()
             return redirect('dashboard')
     else:
@@ -31,7 +32,44 @@ def job_list(request):
 @login_required
 def dashboard(request):
     if request.user.user_type == "employer":
-        jobs = Job.objects.filter(employer=request.user)  # consistent field
+        jobs = Job.objects.filter(employer=request.user)  # employer sees own jobs
+        return render(request, "employer_dashboard.html", {"jobs": jobs})
     else:  # job seeker
         jobs = Job.objects.all()
-    return render(request, "dashboard.html", {"jobs": jobs})
+        return render(request, "jobseeker_dashboard.html", {"jobs": jobs})
+
+
+
+
+
+
+# Job Detail
+def job_detail(request, pk):
+    job = get_object_or_404(Job, id=pk)
+    return render(request, 'jobs/job_detail.html', {'job': job})
+
+
+# Apply to a Job
+@login_required
+def apply_to_job(request, job_id):
+    job = get_object_or_404(Job, id=job_id)
+    if request.method == "POST":
+        form = ApplicationForm(request.POST, request.FILES)
+        if form.is_valid():
+            application = form.save(commit=False)
+            application.job = job
+            application.applicant = request.user
+            application.save()
+            return redirect("job_detail", pk=job.id)  # ✅ fixed here
+    else:
+        form = ApplicationForm()
+    return render(request, "jobs/apply_job.html", {"form": form, "job": job})
+
+# Employer: View Applications for their Jobs
+@login_required
+def view_applications(request, job_id):
+    job = get_object_or_404(Job, id=job_id, employer=request.user)  # Only employer can see
+    applications = job.applications.all()  # related_name="applications"
+    return render(request, "jobs/view_applications.html", {"job": job, "applications": applications})
+
+

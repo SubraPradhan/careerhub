@@ -6,12 +6,25 @@
     <div class="list-group">
         {% for job in jobs %}
             <div class="list-group-item">
-                <h4>{{ job.title }}</h4>
-                <p>{{ job.description|truncatewords:25 }}</p> <!-- ✅ show description -->
+                <!-- Job Title with link -->
+                <h4>
+                    <a href="{% url 'job_detail' job.id %}" class="text-decoration-none">
+                        {{ job.title }}
+                    </a>
+                </h4>
+
+                
+
+                <!-- Job Info -->
                 <small><strong>Location:</strong> {{ job.location }}</small><br>
                 <small><strong>Salary:</strong> {{ job.salary }}</small><br>
                 <small><strong>Posted by:</strong> {{ job.employer.username }}</small><br>
-                <small><strong>Posted on:</strong> {{ job.created_at }}</small>
+                <small><strong>Posted on:</strong> {{ job.created_at|date:"M d, Y" }}</small><br>
+
+                <!-- View Details Button -->
+                <a href="{% url 'job_detail' job.id %}" class="btn btn-primary btn-sm mt-2">
+                    View Details
+                </a>
             </div>
         {% empty %}
             <p>No jobs available right now.</p>
