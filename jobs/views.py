@@ -32,7 +32,7 @@ def job_list(request):
 @login_required
 def dashboard(request):
     if request.user.user_type == "employer":
-        jobs = Job.objects.filter(employer=request.user)  # employer sees own jobs
+        jobs = Job.objects.filter(employer=request.user)
         return render(request, "employer_dashboard.html", {"jobs": jobs})
     else:  # job seeker
         jobs = Job.objects.all()
