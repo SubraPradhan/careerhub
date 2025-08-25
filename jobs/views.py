@@ -36,7 +36,7 @@ def dashboard(request):
         return render(request, "employer_dashboard.html", {"jobs": jobs})
     else:  # job seeker
         jobs = Job.objects.all()
-        return render(request, "jobseeker_dashboard.html", {"jobs": jobs})
+        return render(request, "candidate_dashboard.html", {"jobs": jobs})
 
 
 
@@ -68,8 +68,12 @@ def apply_to_job(request, job_id):
 # Employer: View Applications for their Jobs
 @login_required
 def view_applications(request, job_id):
-    job = get_object_or_404(Job, id=job_id, employer=request.user)  # Only employer can see
-    applications = job.applications.all()  # related_name="applications"
-    return render(request, "jobs/view_applications.html", {"job": job, "applications": applications})
+    job = get_object_or_404(Job, id=job_id)
+    applications = job.applications.all()
+    return render(request, "jobs/view_applications.html", {
+    "job": job,
+    "applications": applications
+})
+
 
 
