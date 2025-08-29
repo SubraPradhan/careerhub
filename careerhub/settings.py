@@ -133,16 +133,9 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']
-LOGIN_REDIRECT_URL = '/' 
-LOGOUT_REDIRECT_URL = '/'
-
-
-
-
+STATICFILES_DIRS = [BASE_DIR / "static"]
 
 AUTH_USER_MODEL = 'users.CustomUser'
+
 LOGIN_REDIRECT_URL = '/users/dashboard/'
-
-
-
+LOGOUT_REDIRECT_URL = '/'
