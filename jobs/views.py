@@ -35,10 +35,8 @@ def dashboard(request):
         jobs = Job.objects.filter(employer=request.user)
         return render(request, "employer_dashboard.html", {"jobs": jobs})
     else:  # job seeker
-        jobs = Job.objects.all()
-        return render(request, "candidate_dashboard.html", {"jobs": jobs})
-
-
+        applications = Application.objects.filter(applicant=request.user).order_by('-applied_on')
+        return render(request, "candidate_dashboard.html", {"applications": applications})
 
 
 
@@ -74,6 +72,16 @@ def view_applications(request, job_id):
     "job": job,
     "applications": applications
 })
+
+
+@login_required
+def update_application_status(request, app_id, status):
+    application = get_object_or_404(Application, id=app_id, job__employer=request.user)
+    if status in ["selected", "rejected"]:
+        application.status = status
+        application.save()
+    return redirect("view_applications", job_id=application.job.id)
+
 
 
 

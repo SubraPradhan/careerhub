@@ -1,8 +1,9 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from .forms import CustomUserCreationForm
-from jobs.models import Job   # ✅ import Job model
+from jobs.models import Job
+from jobs.forms import JobForm   # ✅ Import JobForm properly
 
 
 # ----------------------------
@@ -33,26 +34,28 @@ def dashboard(request):
         return render(request, 'users/candidate_dashboard.html')
 
 
-
-from django.shortcuts import get_object_or_404
-from .forms import forms
-
+# ----------------------------
+# Edit Job
+# ----------------------------
 @login_required
 def edit_job(request, job_id):
-    job = get_object_or_404(Job, id=job_id, posted_by=request.user)
+    job = get_object_or_404(Job, id=job_id, employer=request.user)  # ✅ fixed posted_by → employer
     if request.method == "POST":
-        form = forms(request.POST, instance=job)
+        form = JobForm(request.POST, instance=job)  # ✅ use JobForm
         if form.is_valid():
             form.save()
             return redirect("dashboard")
     else:
-        form = forms(instance=job)
+        form = JobForm(instance=job)
     return render(request, "jobs/edit_job.html", {"form": form})
 
 
+# ----------------------------
+# Delete Job
+# ----------------------------
 @login_required
 def delete_job(request, job_id):
-    job = get_object_or_404(Job, id=job_id, posted_by=request.user)
+    job = get_object_or_404(Job, id=job_id, employer=request.user)  # ✅ fixed posted_by → employer
     if request.method == "POST":
         job.delete()
         return redirect("dashboard")
