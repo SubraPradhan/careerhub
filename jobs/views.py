@@ -36,8 +36,12 @@ def dashboard(request):
         return render(request, "employer_dashboard.html", {"jobs": jobs})
     else:  # job seeker
         applications = Application.objects.filter(applicant=request.user).order_by('-applied_on')
+        
+        # 👇 Debugging
+        print("DEBUG logged in user:", request.user.username)
+        print("DEBUG applications count:", applications.count())
+        
         return render(request, "candidate_dashboard.html", {"applications": applications})
-
 
 
 
