@@ -27,24 +27,6 @@ def job_list(request):
     jobs = Job.objects.all().order_by('-created_at')
     return render(request, 'jobs/job_list.html', {'jobs': jobs})
 
-
-# Dashboard
-@login_required
-def dashboard(request):
-    if request.user.user_type == "employer":
-        jobs = Job.objects.filter(employer=request.user)
-        return render(request, "employer_dashboard.html", {"jobs": jobs})
-    else:  # job seeker
-        applications = Application.objects.filter(applicant=request.user).order_by('-applied_on')
-        
-        # 👇 Debugging
-        print("DEBUG logged in user:", request.user.username)
-        print("DEBUG applications count:", applications.count())
-        
-        return render(request, "candidate_dashboard.html", {"applications": applications})
-
-
-
 # Job Detail
 def job_detail(request, pk):
     job = get_object_or_404(Job, id=pk)
@@ -87,5 +69,44 @@ def update_application_status(request, app_id, status):
     return redirect("view_applications", job_id=application.job.id)
 
 
+#Employer Dashboard View
+@login_required
+def employer_dashboard(request):
+    # Only show jobs posted by this employer
+    jobs = Job.objects.filter(employer=request.user)
+    
+    context = {
+        'jobs': jobs
+    }
+    return render(request, 'employer_dashboard.html', context)
 
+
+
+
+
+
+#Candidate Dashboard View
+@login_required
+def candidate_dashboard(request):
+    # 1️⃣ All available jobs
+    jobs = Job.objects.all()
+
+    # 2️⃣ All applications by this candidate
+    applications = Application.objects.filter(applicant=request.user)
+
+    # 3️⃣ Jobs the candidate has applied to
+    applied_jobs = Job.objects.filter(applications__applicant=request.user)
+
+    # 4️⃣ Debug prints
+    print(f"DEBUG: Candidate '{request.user.username}' sees {jobs.count()} total jobs")
+    print(f"DEBUG: Candidate '{request.user.username}' applied to {applications.count()} jobs")
+    print("DEBUG: Applied job titles:", [job.title for job in applied_jobs])
+
+    context = {
+        'jobs': jobs,
+        'applications': applications,
+        'applied_jobs': applied_jobs
+    }
+
+    return render(request, 'candidate_dashboard.html', context)
 

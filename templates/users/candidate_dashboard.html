@@ -7,6 +7,33 @@
     <!-- Browse Jobs button -->
     <a href="{% url 'job_list' %}" class="btn btn-info mb-3">Browse Jobs</a>
 
+    <!-- Available Jobs Section -->
+    <h3>Available Jobs</h3>
+    {% if jobs %}
+    <ul class="list-group mb-4">
+        {% for job in jobs %}
+        <li class="list-group-item">
+            <h5>{{ job.title }}</h5>
+            <p>{{ job.description|truncatewords:20 }}</p>
+            <p><strong>Location:</strong> {{ job.location }}</p>
+            <p><strong>Salary:</strong> {{ job.salary }}</p>
+
+            <!-- Apply / Already Applied button -->
+            {% if job in applied_jobs %}
+                <button class="btn btn-secondary btn-sm" disabled>Already Applied</button>
+            {% else %}
+                <a href="{% url 'apply_to_job' job.id %}" class="btn btn-primary btn-sm">Apply</a>
+            {% endif %}
+
+            <!-- View Details -->
+            <a href="{% url 'job_detail' job.id %}" class="btn btn-info btn-sm">View Details</a>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+        <p>No jobs available at the moment.</p>
+    {% endif %}
+
     <!-- Applications Table -->
     <h3>Your Applications</h3>
     <p>DEBUG: applications count = {{ applications|length }}</p>
@@ -43,5 +70,3 @@
     </table>
 </div>
 {% endblock %}
-
-

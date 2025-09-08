@@ -43,7 +43,7 @@
                         <ul class="list-unstyled">
                             {% for app in job.applications.all %}
                                 <li class="mb-1">
-                                    {{ app.applicant.username }} - {{ app.applied_at|date:"M d, Y H:i" }}
+                                    {{ app.applicant.username }} - {{ app.applied_on|date:"M d, Y H:i" }}
                                     {% if app.resume %}
                                         | <a href="{{ app.resume.url }}" target="_blank">Resume</a>
                                     {% endif %}
@@ -64,3 +64,4 @@
     {% endfor %}
 </div>
 {% endblock %}
+
