@@ -4,7 +4,7 @@
 <div class="container mt-4">
     <h2>Candidate Dashboard</h2>
 
-    <!-- Browse Jobs button -->
+    <!-- Browse Jobs Button -->
     <a href="{% url 'job_list' %}" class="btn btn-info mb-3">Browse Jobs</a>
 
     <!-- Available Jobs Section -->
@@ -18,7 +18,7 @@
             <p><strong>Location:</strong> {{ job.location }}</p>
             <p><strong>Salary:</strong> {{ job.salary }}</p>
 
-            <!-- Apply / Already Applied button -->
+            <!-- Apply / Already Applied Button -->
             {% if job in applied_jobs %}
                 <button class="btn btn-secondary btn-sm" disabled>Already Applied</button>
             {% else %}
@@ -36,37 +36,42 @@
 
     <!-- Applications Table -->
     <h3>Your Applications</h3>
-    <p>DEBUG: applications count = {{ applications|length }}</p>
     
+
     <table class="table table-bordered">
-      <thead>
-        <tr>
-          <th>Job</th>
-          <th>Status</th>
-          <th>Applied On</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for app in applications %}
-        <tr>
-          <td>{{ app.job.title }}</td>
-          <td>
-            {% if app.status == "pending" %}
-              <span class="badge bg-warning">Pending</span>
-            {% elif app.status == "selected" %}
-              <span class="badge bg-success">Selected ✅</span>
-            {% elif app.status == "rejected" %}
-              <span class="badge bg-danger">Rejected ❌</span>
-            {% endif %}
-          </td>
-          <td>{{ app.applied_on|date:"M d, Y H:i" }}</td>
-        </tr>
-        {% empty %}
-        <tr>
-          <td colspan="3" class="text-center">No applications yet.</td>
-        </tr>
-        {% endfor %}
-      </tbody>
+        <thead>
+            <tr>
+                <th>Job</th>
+                <th>Status</th>
+                <th>Applied On</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for app in applications %}
+            <tr>
+                <td>{{ app.job.title }}</td>
+
+                <!-- Status Badge -->
+                <td>
+                    {% if app.status == "pending" %}
+                        <span class="badge bg-warning">{{ app.get_status_display }}</span>
+                    {% elif app.status == "selected" %}
+                        <span class="badge bg-success">{{ app.get_status_display }} ✅</span>
+                    {% elif app.status == "rejected" %}
+                        <span class="badge bg-danger">{{ app.get_status_display }} ❌</span>
+                    {% else %}
+                        <span class="badge bg-secondary">Unknown</span>
+                    {% endif %}
+                </td>
+
+                <td>{{ app.applied_on|date:"M d, Y H:i" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3" class="text-center">No applications yet.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
 </div>
 {% endblock %}
